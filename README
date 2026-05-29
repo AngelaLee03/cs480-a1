@@ -1,0 +1,71 @@
+CS480 Summer 2026
+Programming Assignment #1: Asynchronous Threads
+
+Name: Angela Lee
+Class Account: cssc3130
+
+Name: Caitlin Corpus
+Class Account: 
+
+
+FILES INCLUDED:
+
+bots.cpp
+    Main source file containing the threaded bot program.
+
+bots.h
+    Header file for the project.
+
+Makefile
+    Compiles the project and removes generated files.
+
+README
+    Description and instructions for the project.
+
+
+COMPILATION:
+
+To compile the project:
+
+make
+
+
+RUNNING THE PROGRAM:
+
+To execute the program:
+
+./bots
+
+
+CLEANING FILES:
+
+To remove executable and output files:
+
+make clean
+
+
+PROGRAM DESCRIPTION:
+
+This program demonstrates asynchronous multithreading
+using POSIX threads and semaphores.
+
+The program:
+- Creates a shared file named QUOTE.txt
+- Writes the process ID to the file
+- Creates seven threads using pthread_create()
+- Uses a semaphore named FLAG to synchronize access
+  to the shared file
+- Even numbered threads sleep for 2 seconds and write
+  the Brian Kernighan quote
+- Odd numbered threads sleep for 3 seconds and write
+  the Edsger Dijkstra quote
+- Each thread writes to the shared file 8 total times
+- The main process waits for all threads using
+  pthread_join()
+- The semaphore is destroyed before the program exits
+
+
+NOTES:
+
+The semaphore prevents multiple threads from writing
+to QUOTE.txt simultaneously, preventing corrupted output.
