@@ -3,6 +3,7 @@
 #include <semaphore.h>
 #include <unistd.h>
 #include <fstream>
+#include "bots.h"
 
 using namespace std;
 
