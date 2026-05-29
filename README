@@ -1,28 +1,33 @@
 CS480 Summer 2026
 Programming Assignment #1: Asynchronous Threads
 
+Filename: README
+
 Name: Angela Lee
 Class Account: cssc3130
 
-Name: Caitlin Corpus
-Class Account: 
+Partner Name: Caitlin Corpus
+Partner Class Account:
 
 Testing Account: cssc3130
+
+---
 
 FILES INCLUDED:
 
 bots.cpp
-    Main source file containing the threaded bot program.
+Main source file containing the threaded bot program.
 
 bots.h
-    Header file for the project.
+Header file for the project.
 
 Makefile
-    Compiles the project and removes generated files.
+Compiles the project and removes generated files.
 
 README
-    Description and instructions for the project.
+Description and instructions for the project.
 
+---
 
 COMPILATION:
 
@@ -30,6 +35,7 @@ To compile the project:
 
 make
 
+---
 
 RUNNING THE PROGRAM:
 
@@ -37,6 +43,7 @@ To execute the program:
 
 ./bots
 
+---
 
 CLEANING FILES:
 
@@ -44,29 +51,60 @@ To remove executable and output files:
 
 make clean
 
+---
 
 PROGRAM DESCRIPTION:
 
-This program demonstrates asynchronous multithreading
-using POSIX threads and semaphores.
+This program demonstrates asynchronous multithreading using POSIX threads and semaphores.
 
 The program:
-- Creates a shared file named QUOTE.txt
-- Writes the process ID to the file
-- Creates seven threads using pthread_create()
-- Uses a semaphore named FLAG to synchronize access
-  to the shared file
-- Even numbered threads sleep for 2 seconds and write
-  the Brian Kernighan quote
-- Odd numbered threads sleep for 3 seconds and write
-  the Edsger Dijkstra quote
-- Each thread writes to the shared file 8 total times
-- The main process waits for all threads using
-  pthread_join()
-- The semaphore is destroyed before the program exits
 
+* Creates a shared file named QUOTE.txt
+* Writes the process ID to the file
+* Creates seven threads using pthread_create()
+* Uses a semaphore named FLAG to synchronize access to the shared file
+* Even numbered threads sleep for 2 seconds and write the Brian Kernighan quote
+* Odd numbered threads sleep for 3 seconds and write the Edsger Dijkstra quote
+* Each thread writes to the shared file 8 total times
+* The main process waits for all threads using pthread_join()
+* The semaphore is destroyed before the program exits
+
+---
+
+DESIGN DECISIONS:
+
+* POSIX threads were used to allow seven bots to execute concurrently.
+* A semaphore named FLAG was used to ensure only one thread writes to QUOTE.txt at a time.
+* Thread IDs are stored in an array and passed individually to each thread.
+* QUOTE.txt is opened and closed during each write operation to ensure proper file handling.
+
+---
+
+EXTRA FEATURES:
+
+* Added descriptive comments throughout the source code.
+* Displays a friendly completion message after all threads have finished executing.
+
+---
+
+KNOWN DEFICIENCIES OR BUGS:
+
+* No known bugs at this time.
+* Thread execution order may vary between runs because thread scheduling is handled by the operating system and execution is asynchronous by design.
+
+---
+
+LESSONS LEARNED:
+
+* Learned how to create and manage POSIX threads.
+* Learned how to synchronize threads using semaphores.
+* Learned how race conditions can occur when multiple threads access a shared resource.
+* Learned how to use a Makefile to compile and manage a project.
+* Learned how thread scheduling affects program execution order.
+
+---
 
 NOTES:
 
-The semaphore prevents multiple threads from writing
-to QUOTE.txt simultaneously, preventing corrupted output.
+The semaphore prevents multiple threads from writing to QUOTE.txt simultaneously, preventing corrupted output.
+
