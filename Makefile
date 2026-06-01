@@ -1,5 +1,17 @@
-bots: bots.cpp
-	g++ bots.cpp -o bots -pthread
+###########################################################
+# CS480 Assignment #1
+# Asynchronous Threads
+# ###########################################################
+
+EXEC = bots
+CC = g++
+LFLAGS = -pthread
+CFLAGS = -c
+
+$(EXEC): bots.cpp
+	$(CC) bots.cpp -o $(EXEC) $(LFLAGS)
 
 clean:
-	rm -f bots QUOTE.txt
+	rm -f $(EXEC) QUOTE.txt
+
+#########################[ EOF: Makefile ]##################
