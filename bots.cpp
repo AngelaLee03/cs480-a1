@@ -92,6 +92,9 @@ int main()
     {
         // Thread IDs will be numbered 1 through 7
         ids[i] = i + 1;
+        // Informs threads are being created
+        cout << "Creating thread, in main(): " 
+            << ids[i] << endl;
 
         // Create thread
         pthread_create(&threads[i], NULL, botFunction, &ids[i]);
