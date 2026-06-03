@@ -108,9 +108,6 @@ int main()
         cout << "Creating thread, in main(): " 
             << ids[i] << endl;
 
-        // Inform user that a thread is being created
-        cout << "In main: creating thread " << ids[i] << endl;
-
         // Create thread
         rc = pthread_create(&threads[i], NULL, botFunction, &ids[i]);
 
