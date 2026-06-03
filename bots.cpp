@@ -3,17 +3,20 @@
 #include <semaphore.h>
 #include <unistd.h>
 #include <fstream>
+#include <cstdlib>
 #include "bots.h"
 
 using namespace std;
+
+#define NUM_THREADS 7
 
 // Global semaphore used to control access to QUOTE.txt
 sem_t FLAG;
 
 /*
- * Thread function executed by each bot thread
+ * Thread function executed by each bot thread.
  * Each thread writes its assigned quote to QUOTE.txt
- * while using a semaphore to prevent file corruption
+ * while using a semaphore to prevent file corruption.
  */
 void* botFunction(void* arg)
 {
@@ -23,15 +26,13 @@ void* botFunction(void* arg)
     // Each thread runs a total of 8 times
     for(int i = 0; i < 8; i++)
     {
-        // Even numbered threads once every 2 seconds
+        // Even numbered threads run every 2 seconds
         if(id % 2 == 0)
             sleep(2);
-
-        // Odd numbered threads once every 3 seconds
         else
             sleep(3);
 
-        // Wait for access to shared file
+        // Wait for access to the shared file
         sem_wait(&FLAG);
 
         // Open QUOTE.txt in append mode
@@ -44,6 +45,8 @@ void* botFunction(void* arg)
                  << ": \"Controlling complexity is the essence of computer programming.\" "
                  << "--Brian Kernighan\r\n";
         }
+
+        // Odd threads write the Edsger Dijkstra quote
         else
         {
             file << "Thread ID " << id
@@ -51,7 +54,7 @@ void* botFunction(void* arg)
                  << "--Edsger Dijkstra\r\n";
         }
 
-        // Print the thread activity to console
+        // Print thread activity to console
         cout << "Thread " << id << " is running" << endl;
 
         // Close the file after writing
@@ -73,11 +76,14 @@ void* botFunction(void* arg)
  */
 int main()
 {
-    // Array of 7 thread objects
-    pthread_t threads[7];
+    // Array of thread objects
+    pthread_t threads[NUM_THREADS];
 
     // Array holding thread IDs
-    int ids[7];
+    int ids[NUM_THREADS];
+
+    // Variable used for error checking
+    int rc;
 
     // Create QUOTE.txt and write process ID
     ofstream file("QUOTE.txt");
@@ -85,10 +91,16 @@ int main()
     file.close();
 
     // Initialize semaphore with value 1
-    sem_init(&FLAG, 0, 1);
+    rc = sem_init(&FLAG, 0, 1);
 
-    // Create 7 threads
-    for(int i = 0; i < 7; i++)
+    if(rc)
+    {
+        cout << "ERROR; semaphore initialization failed." << endl;
+        exit(-1);
+    }
+
+    // Create threads
+    for(int i = 0; i < NUM_THREADS; i++)
     {
         // Thread IDs will be numbered 1 through 7
         ids[i] = i + 1;
@@ -96,18 +108,43 @@ int main()
         cout << "Creating thread, in main(): " 
             << ids[i] << endl;
 
+        // Inform user that a thread is being created
+        cout << "In main: creating thread " << ids[i] << endl;
+
         // Create thread
-        pthread_create(&threads[i], NULL, botFunction, &ids[i]);
+        rc = pthread_create(&threads[i], NULL, botFunction, &ids[i]);
+
+        // Check for thread creation errors
+        if(rc)
+        {
+            cout << "ERROR; return code from pthread_create() is "
+                 << rc << endl;
+            exit(-1);
+        }
     }
 
-    // Wait for all of the threads to complete
-    for(int i = 0; i < 7; i++)
+    // Wait for all threads to complete
+    for(int i = 0; i < NUM_THREADS; i++)
     {
-        pthread_join(threads[i], NULL);
+        rc = pthread_join(threads[i], NULL);
+
+        // Check for thread join errors
+        if(rc)
+        {
+            cout << "ERROR; return code from pthread_join() is "
+                 << rc << endl;
+            exit(-1);
+        }
     }
 
     // Destroy semaphore after all threads finish
-    sem_destroy(&FLAG);
+    rc = sem_destroy(&FLAG);
+
+    if(rc)
+    {
+        cout << "ERROR; semaphore destruction failed." << endl;
+        exit(-1);
+    }
 
     // Friendly exit message
     cout << "All threads finished successfully." << endl;
